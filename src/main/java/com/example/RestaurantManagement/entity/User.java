@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 @Getter
 @Setter
@@ -26,11 +27,12 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private String password;
-    private String firstname;
-    private String lastname;
+    private String name;
     private String cccd;
     private String email;
     private String phoneNumber;
+    private Date dob;
+    private String address;
     private boolean state;
 
     @JoinColumn(name = "role_id")

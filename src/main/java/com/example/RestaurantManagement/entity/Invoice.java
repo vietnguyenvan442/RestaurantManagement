@@ -35,12 +35,10 @@ public class Invoice implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Supplier supplier;
 
-    @JsonBackReference(value = "invoice_ingredient")
     @JoinColumn(name = "ingredient_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Ingredient ingredient;
 
-    @JsonBackReference(value = "invoice_outbound_receipt")
     @JoinColumn(name = "outbound_receipt_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Outbound_Receipt outbound_receipt;

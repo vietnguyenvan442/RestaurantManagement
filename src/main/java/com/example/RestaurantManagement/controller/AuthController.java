@@ -20,7 +20,7 @@ public class AuthController {
     public ResponseEntity<BearerToken> createAuthenticationToken(@RequestBody LoginDto user) {
         log.info("Received login request for user: {}", user.getUsername());
         BearerToken token = userService.generateToken(user);
-        log.info("Generated token for user: {}", user.getUsername());
+        log.info("Generated token");
         return ResponseEntity.ok(token);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.RestaurantManagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "customer")
 public class Customer extends User {
 
-    @JsonBackReference(value = "customer-bill")
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Bill> bills;
 }
