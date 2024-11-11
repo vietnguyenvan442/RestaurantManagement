@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface IngredientService {
     public List<Ingredient> getAll();
+
     public Ingredient getById(int id);
+
     public Ingredient add(Ingredient ingredient);
+
     public Ingredient update(int id, Ingredient ingredient);
 }

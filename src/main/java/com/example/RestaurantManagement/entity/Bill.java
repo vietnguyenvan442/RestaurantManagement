@@ -1,7 +1,7 @@
 package com.example.RestaurantManagement.entity;
 
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,22 +28,22 @@ public class Bill implements Serializable {
     private double price;
 
     @JoinColumn(name = "table_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private com.example.RestaurantManagement.entity.Table table;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bill", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bill", cascade = CascadeType.ALL)
     private List<Detail_Bill> detailBills;
 
     @JoinColumn(name = "customer_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
 
     @JoinColumn(name = "sale_staff_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Sale_Staff sale_staff;
 
     @JoinColumn(name = "voucher_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Voucher voucher;
 
 }

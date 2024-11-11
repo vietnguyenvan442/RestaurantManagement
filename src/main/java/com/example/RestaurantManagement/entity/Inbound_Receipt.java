@@ -1,7 +1,7 @@
 package com.example.RestaurantManagement.entity;
 
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,17 +18,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Inbound_Receipt implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private Date date;
 
+    @JoinColumn(name = "invoice_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Invoice invoice;
+
     @JoinColumn(name = "warehouse_staff_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Warehouse_Staff warehouse_staff;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "inbound_receipt", cascade = CascadeType.ALL)
-    private List<Detail_Inbound> detail_inboundList;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "inbound_receipt", cascade = CascadeType.ALL)
+    private List<Detail_Inbound> detail_inbounds;
 }

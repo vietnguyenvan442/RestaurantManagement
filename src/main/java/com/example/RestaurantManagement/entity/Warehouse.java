@@ -1,6 +1,7 @@
 package com.example.RestaurantManagement.entity;
-import jakarta.persistence.*;
+
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,6 @@ public class Warehouse implements Serializable {
     private String name;
     private String address;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "warehouse", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "warehouse", cascade = CascadeType.ALL)
     private List<Detail_Warehouse> detail_warehouseList;
 }

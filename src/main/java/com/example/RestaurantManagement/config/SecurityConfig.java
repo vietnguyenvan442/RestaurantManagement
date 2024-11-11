@@ -2,6 +2,7 @@ package com.example.RestaurantManagement.config;
 
 import com.example.RestaurantManagement.security.UserDetailsServiceImpl;
 import com.example.RestaurantManagement.util.JwtRequestFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
@@ -47,6 +47,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/ingredients/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/suppliers/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/invoices/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/dishs/**").hasRole("MANAGER")
+                        .requestMatchers("/combos/**").hasRole("MANAGER")
+                        .requestMatchers("/menus/**").hasRole("MANAGER")
                         .requestMatchers("/users/**").hasRole("MANAGER")
                         .anyRequest().authenticated()
                 )

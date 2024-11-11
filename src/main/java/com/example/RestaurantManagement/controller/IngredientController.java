@@ -4,7 +4,6 @@ import com.example.RestaurantManagement.entity.Ingredient;
 import com.example.RestaurantManagement.service.IngredientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,24 +20,23 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     @GetMapping("")
-    public ResponseEntity<List<Ingredient>> getIngredients(){
+    public ResponseEntity<List<Ingredient>> getIngredients() {
         return ResponseEntity.of(Optional.ofNullable(ingredientService.getAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingredient> getById(@PathVariable int id){
+    public ResponseEntity<Ingredient> getById(@PathVariable int id) {
         return ResponseEntity.ok(ingredientService.getById(id));
     }
 
-
     @PostMapping("")
-    public ResponseEntity<Ingredient> add(@RequestBody Ingredient ingredient){
+    public ResponseEntity<Ingredient> add(@RequestBody Ingredient ingredient) {
         log.info("Adding ingredient: {}", ingredient.getName());
         return ResponseEntity.ok(ingredientService.add(ingredient));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> update(@PathVariable int id, @RequestBody Ingredient ingredient){
+    public ResponseEntity<Ingredient> update(@PathVariable int id, @RequestBody Ingredient ingredient) {
         return ResponseEntity.ok(ingredientService.update(id, ingredient));
     }
 }

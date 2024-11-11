@@ -20,7 +20,7 @@ public class IngredientServiceImpl implements IngredientService {
     private IngredientRepository ingredientRepository;
 
     @Override
-    public List<Ingredient> getAll(){
+    public List<Ingredient> getAll() {
         return ingredientRepository.findAll();
     }
 
@@ -52,21 +52,22 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientRepository.save(old);
     }
 
-    public boolean checkNull(Ingredient ingredient){
+    public boolean checkNull(Ingredient ingredient) {
         if (ingredient.getName().isEmpty()) return true;
         if (ingredient.getPrice() == null) return true;
         return false;
     }
 
-    public boolean checkAlreadyExists(Ingredient ingredient){
+    public boolean checkAlreadyExists(Ingredient ingredient) {
         Ingredient old = ingredientRepository.findByName(ingredient.getName());
         if (old != null) return true;
         return false;
     }
 
-    public boolean checkDuplicateName(int id, Ingredient ingredient){
+    public boolean checkDuplicateName(int id, Ingredient ingredient) {
         Ingredient old = ingredientRepository.findById(id);
-        if (!old.getName().equalsIgnoreCase(ingredient.getName()) && ingredientRepository.findByName(ingredient.getName()) != null) return true;
+        if (!old.getName().equalsIgnoreCase(ingredient.getName()) && ingredientRepository.findByName(ingredient.getName()) != null)
+            return true;
         return false;
     }
 }

@@ -1,9 +1,8 @@
 package com.example.RestaurantManagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,16 +22,14 @@ public class Detail_Outbound implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int amount;
-    private double price;
-    private double total;
+    private String amount;
 
     @JoinColumn(name = "ingredient_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Ingredient ingredient;
 
-    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "outbound_receipt_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Outbound_Receipt outbound_receipt;
 }

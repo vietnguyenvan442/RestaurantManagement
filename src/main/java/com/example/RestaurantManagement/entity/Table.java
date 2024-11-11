@@ -1,5 +1,6 @@
 package com.example.RestaurantManagement.entity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Table implements Serializable {
     private String des;
     private String address;
 
-    @JsonBackReference
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "table", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "table", cascade = CascadeType.ALL)
     private List<Bill> bills;
 }

@@ -145,7 +145,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
     }
 
 
-    public void checkAlreadyExists(User user){
+    public void checkAlreadyExists(User user) {
         User old = userRepository.findByCccd(user.getCccd());
         if (old != null) throw new AlreadyExistsException("Cccd Already Exists!");
         old = userRepository.findByEmail(user.getEmail());
@@ -164,7 +164,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         return userRepository.save(old);
     }
 
-    public void checkNull(User user){
+    public void checkNull(User user) {
         if (user.getUsername().isEmpty()) throw new ValidationException("Username not null");
         if (user.getPassword().isEmpty()) throw new ValidationException("Password not null");
         if (user.getName().isEmpty()) throw new ValidationException("Name not null");

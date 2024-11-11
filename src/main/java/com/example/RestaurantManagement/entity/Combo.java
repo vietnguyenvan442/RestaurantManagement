@@ -1,10 +1,8 @@
 package com.example.RestaurantManagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,14 +27,14 @@ public class Combo implements Serializable {
 
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "combo", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)
     private List<Dish> dishes;
 
-    @JsonBackReference(value = "combo-detailBill")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "combo", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)
     private List<Detail_Bill> detailBills;
 
-    @JsonBackReference(value = "combo-detailMenu")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "combo", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)
     private List<Detail_Menu> detailMenus;
 }

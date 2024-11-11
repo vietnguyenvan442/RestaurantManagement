@@ -1,8 +1,8 @@
 package com.example.RestaurantManagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,18 +28,19 @@ public class Invoice implements Serializable {
     private Date end_date;
 
     @JoinColumn(name = "warehouse_staff_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Warehouse_Staff warehouse_Staff;
 
     @JoinColumn(name = "supplier_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Supplier supplier;
 
-    @JoinColumn(name = "ingredient_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Ingredient ingredient;
 
-    @JoinColumn(name = "outbound_receipt_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Outbound_Receipt outbound_receipt;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "invoice", cascade = CascadeType.ALL)
+    private List<Detail_Invoice> detail_invoices;
+
+    @JsonIgnore
+    @JoinColumn(name = "inbound_receipt_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Inbound_Receipt inbound_receipt;
 }
