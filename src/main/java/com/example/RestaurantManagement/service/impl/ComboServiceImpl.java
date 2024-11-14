@@ -58,7 +58,7 @@ public class ComboServiceImpl implements ComboSerivce {
         if (!Objects.equals(old.getName(), combo.getName())) checkAlreadyExists(combo);
 
         old.setName(combo.getName());
-        old.setDescription(combo.getDescription());
+        old.setDes(combo.getDes());
         List<Dish> managedDishes = new ArrayList<>();
         for (Dish d : combo.getDishes()) {
             Dish managedDish = dishService.getById(d.getId());

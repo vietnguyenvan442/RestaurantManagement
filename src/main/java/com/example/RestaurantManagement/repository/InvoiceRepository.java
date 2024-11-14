@@ -11,4 +11,6 @@ import java.util.List;
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     @Query("SELECT i FROM Invoice i WHERE i.end_date >= CURRENT_DATE")
     List<Invoice> findAllNotExpired();
+
+    Invoice findById(int id);
 }

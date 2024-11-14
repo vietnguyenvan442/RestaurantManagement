@@ -22,7 +22,8 @@ public class Detail_Inbound implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String amount;
+    private int amount;
+    private String unit;
     private double price;
     private double total;
 

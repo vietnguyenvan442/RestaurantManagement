@@ -22,7 +22,8 @@ public class Detail_Outbound implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String amount;
+    private int amount;
+    private String unit;
 
     @JoinColumn(name = "ingredient_id")
     @ManyToOne(fetch = FetchType.EAGER)

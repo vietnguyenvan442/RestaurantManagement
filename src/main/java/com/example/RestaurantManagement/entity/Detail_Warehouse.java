@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
 
@@ -22,7 +23,8 @@ public class Detail_Warehouse implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String amount;
+    private double amount;
+    private String unit;
     private double price;
     private double total;
 
@@ -34,4 +36,12 @@ public class Detail_Warehouse implements Serializable {
     @JoinColumn(name = "warehouse_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Warehouse warehouse;
+
+    public Detail_Warehouse(double amount, String unit, double price, double total, Ingredient ingredient) {
+        this.amount = amount;
+        this.unit = unit;
+        this.price = price;
+        this.total = total;
+        this.ingredient = ingredient;
+    }
 }

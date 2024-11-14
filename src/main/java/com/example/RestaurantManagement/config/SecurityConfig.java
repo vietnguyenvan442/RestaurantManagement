@@ -46,13 +46,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Vô hiệu hóa CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/bills/**").hasRole("SALE")
+                        .requestMatchers("/bills/book-table").hasAnyRole("SALE", "CUSTOMER")
+                        .requestMatchers("/bills/book-dish").hasAnyRole("SALE", "CUSTOMER")
+                        .requestMatchers("/bills/customer/{id_cus}").hasRole("CUSTOMER")
                         .requestMatchers("/ingredients/**").hasRole("WAREHOUSE")
                         .requestMatchers("/suppliers/**").hasRole("WAREHOUSE")
                         .requestMatchers("/invoices/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/warehouses/**").hasRole("WAREHOUSE")
                         .requestMatchers("/dishs/**").hasRole("MANAGER")
                         .requestMatchers("/combos/**").hasRole("MANAGER")
                         .requestMatchers("/menus/**").hasRole("MANAGER")
                         .requestMatchers("/users/**").hasRole("MANAGER")
+                        .requestMatchers("/statistic/**").hasRole("MANAGER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -7,4 +7,5 @@ import java.util.List;
 public interface InvoiceService {
     public Invoice add(Invoice invoice);
     public List<Invoice> getAllNotExpired();
+    public Invoice getById(int id);
 }

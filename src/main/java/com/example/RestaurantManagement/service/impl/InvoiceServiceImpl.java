@@ -3,12 +3,9 @@ package com.example.RestaurantManagement.service.impl;
 import com.example.RestaurantManagement.entity.Detail_Invoice;
 import com.example.RestaurantManagement.entity.Ingredient;
 import com.example.RestaurantManagement.entity.Invoice;
+import com.example.RestaurantManagement.exception.ResourceNotFoundException;
 import com.example.RestaurantManagement.repository.InvoiceRepository;
-import com.example.RestaurantManagement.repository.WarehouseRepository;
-import com.example.RestaurantManagement.service.IngredientService;
-import com.example.RestaurantManagement.service.InvoiceService;
-import com.example.RestaurantManagement.service.SupplierService;
-import com.example.RestaurantManagement.service.UserService;
+import com.example.RestaurantManagement.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +23,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     private IngredientService ingredientService;
 
     @Autowired
-    private WarehouseRepository warehouseRepository;
+    private UserService userService;
 
     @Override
     public Invoice add(Invoice invoice) {
         invoice.setSupplier(supplierService.getById(invoice.getSupplier().getId()));
-        invoice.setWarehouse_Staff(warehouseRepository.findById(invoice.getWarehouse_Staff().getId()));
+        invoice.setWarehouse_Staff(userService.getWarehouseStaffById(invoice.getWarehouse_Staff().getId()));
         for (Detail_Invoice dv: invoice.getDetail_invoices()){
             Ingredient ingredient = ingredientService.getById(dv.getIngredient().getId());
             if (ingredient != null) dv.setIngredient(ingredient);
@@ -43,5 +40,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<Invoice> getAllNotExpired() {
         return invoiceRepository.findAllNotExpired();
+    }
+
+    @Override
+    public Invoice getById(int id) {
+        Invoice invoice = invoiceRepository.findById(id);
+        if (invoice == null) throw new ResourceNotFoundException("Invoice not found");
+        return invoice;
     }
 }

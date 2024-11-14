@@ -24,8 +24,8 @@ public class Combo implements Serializable {
     private int id;
 
     private String name;
-
-    private String description;
+    private double price;
+    private String des;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)
     private List<Dish> dishes;

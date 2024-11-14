@@ -6,10 +6,7 @@ import com.example.RestaurantManagement.entity.*;
 import com.example.RestaurantManagement.exception.AlreadyExistsException;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
 import com.example.RestaurantManagement.exception.ValidationException;
-import com.example.RestaurantManagement.repository.CustomerRepository;
-import com.example.RestaurantManagement.repository.SaleRepository;
-import com.example.RestaurantManagement.repository.UserRepository;
-import com.example.RestaurantManagement.repository.WarehouseRepository;
+import com.example.RestaurantManagement.repository.*;
 import com.example.RestaurantManagement.service.RoleService;
 import com.example.RestaurantManagement.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +37,10 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
     private UserRepository userRepository;
 
     @Autowired
-    private WarehouseRepository warehouseRepository;
+    private WarehouseStaffRepository warehouseStaffRepository;
 
     @Autowired
-    private SaleRepository saleRepository;
+    private SaleStaffRepository saleStaffRepository;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -107,7 +104,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         if (user.getRole().getId() == 2) {
             Warehouse_Staff warehouseStaff = new Warehouse_Staff();
             warehouseStaff.setUsername(user.getUsername());
-            warehouseStaff.setPassword(user.getPassword());
+            warehouseStaff.setPassword(passwordEncoder.encode(user.getPassword()));
             warehouseStaff.setName(user.getName());
             warehouseStaff.setCccd(user.getCccd());
             warehouseStaff.setEmail(user.getEmail());
@@ -116,11 +113,11 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
             warehouseStaff.setAddress(user.getAddress());
             warehouseStaff.setRole(user.getRole());
             warehouseStaff.setState(true);
-            return warehouseRepository.save(warehouseStaff);
+            return warehouseStaffRepository.save(warehouseStaff);
         } else if (user.getRole().getId() == 3) {
             Sale_Staff saleStaff = new Sale_Staff();
             saleStaff.setUsername(user.getUsername());
-            saleStaff.setPassword(user.getPassword());
+            saleStaff.setPassword(passwordEncoder.encode(user.getPassword()));
             saleStaff.setCccd(user.getCccd());
             saleStaff.setEmail(user.getEmail());
             saleStaff.setPhoneNumber(user.getPhoneNumber());
@@ -128,11 +125,11 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
             saleStaff.setAddress(user.getAddress());
             saleStaff.setRole(user.getRole());
             saleStaff.setState(true);
-            return saleRepository.save(saleStaff);
+            return saleStaffRepository.save(saleStaff);
         } else {
             Customer customer = new Customer();
             customer.setUsername(user.getUsername());
-            customer.setPassword(user.getPassword());
+            customer.setPassword(passwordEncoder.encode(user.getPassword()));
             customer.setCccd(user.getCccd());
             customer.setEmail(user.getEmail());
             customer.setPhoneNumber(user.getPhoneNumber());
@@ -194,65 +191,16 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
     }
 
     @Override
-    public void saveWarehouseStaff() {
-        log.info("Saving default manager");
-        Warehouse_Staff warehouse_staff = new Warehouse_Staff();
-        warehouse_staff.setUsername("warehouse");
-        warehouse_staff.setPassword(passwordEncoder.encode("123"));
-        warehouse_staff.setCccd("012344546");
-        warehouse_staff.setAddress("HN");
-        warehouse_staff.setDob(Date.valueOf("2002-11-12"));
-        warehouse_staff.setName("Nguyen Son");
-        warehouse_staff.setEmail("sonv@gmail.com");
-        warehouse_staff.setPhoneNumber("83798098754");
-        warehouse_staff.setState(true);
-
-        Role role = roleService.findById(2);
-        warehouse_staff.setRole(role);
-
-        userRepository.save(warehouse_staff);
-        log.info("Saved successfully");
+    public Warehouse_Staff getWarehouseStaffById(int id) {
+        Warehouse_Staff warehouse_staff = warehouseStaffRepository.findById(id);
+        if (warehouse_staff == null) throw new ResourceNotFoundException("Warehouse_Staff not found with id: " + id);
+        return warehouse_staff;
     }
 
     @Override
-    public void saveManager() {
-        log.info("Saving default warehouse staff");
-        Manager manager = new Manager();
-        manager.setUsername("manager");
-        manager.setPassword(passwordEncoder.encode("123"));
-        manager.setCccd("01234");
-        manager.setAddress("HN");
-        manager.setDob(Date.valueOf("2002-11-12"));
-        manager.setName("Nguyen Viet");
-        manager.setEmail("viet@gmail.com");
-        manager.setPhoneNumber("834928754");
-        manager.setState(true);
-
-        Role role = roleService.findById(1);
-        manager.setRole(role);
-
-        userRepository.save(manager);
-        log.info("Saved successfully");
-    }
-
-    @Override
-    public void saveSaleStaff() {
-        log.info("Saving default sale staff");
-        Sale_Staff sale_staff = new Sale_Staff();
-        sale_staff.setUsername("sale");
-        sale_staff.setPassword(passwordEncoder.encode("123"));
-        sale_staff.setCccd("013113234");
-        sale_staff.setAddress("HN");
-        sale_staff.setDob(Date.valueOf("2002-11-12"));
-        sale_staff.setName("Nguyen Tuan");
-        sale_staff.setEmail("tuan@gmail.com");
-        sale_staff.setPhoneNumber("8323424928754");
-        sale_staff.setState(true);
-
-        Role role = roleService.findById(3);
-        sale_staff.setRole(role);
-
-        userRepository.save(sale_staff);
-        log.info("Saved successfully");
+    public Sale_Staff getSaleStaffById(int id) {
+        Sale_Staff sale_staff = saleStaffRepository.findById(id);
+        if (sale_staff == null) throw new ResourceNotFoundException("Sale_Staff not found with id: " + id);
+        return sale_staff;
     }
 }

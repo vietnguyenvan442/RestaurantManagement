@@ -24,6 +24,7 @@ public class Dish implements Serializable {
 
     private String name;
     private String des;
+    private double price;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dish", cascade = CascadeType.ALL)
     private List<Detail_Dish> detail_dishes;

@@ -2,7 +2,9 @@ package com.example.RestaurantManagement.service;
 
 import com.example.RestaurantManagement.dto.BearerToken;
 import com.example.RestaurantManagement.dto.LoginDto;
+import com.example.RestaurantManagement.entity.Sale_Staff;
 import com.example.RestaurantManagement.entity.User;
+import com.example.RestaurantManagement.entity.Warehouse_Staff;
 
 import java.util.List;
 
@@ -19,9 +21,7 @@ public interface UserService {
 
     public void delete(int id);
 
-    public void saveManager();
+    public Warehouse_Staff getWarehouseStaffById(int id);
 
-    public void saveWarehouseStaff();
-
-    public void saveSaleStaff();
+    public Sale_Staff getSaleStaffById(int id);
 }

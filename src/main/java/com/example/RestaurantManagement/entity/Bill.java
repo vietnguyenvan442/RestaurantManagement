@@ -1,5 +1,6 @@
 package com.example.RestaurantManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,9 +26,16 @@ public class Bill implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Date date;
-    private double total;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime start;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime end;
+
+    private double price_table;
     private double price;
+    private double total;
+    private boolean state;
 
     @JoinColumn(name = "table_id")
     @ManyToOne(fetch = FetchType.EAGER)

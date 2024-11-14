@@ -25,5 +25,5 @@ public class Warehouse implements Serializable {
     private String address;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "warehouse", cascade = CascadeType.ALL)
-    private List<Detail_Warehouse> detail_warehouseList;
+    private List<Detail_Warehouse> detail_warehouses;
 }
