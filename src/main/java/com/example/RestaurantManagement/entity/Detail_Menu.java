@@ -21,6 +21,8 @@ public class Detail_Menu implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int amount;
+
     @JoinColumn(name = "dish_id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     private Dish dish;
