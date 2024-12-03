@@ -24,4 +24,6 @@ public interface UserService {
     public Warehouse_Staff getWarehouseStaffById(int id);
 
     public Sale_Staff getSaleStaffById(int id);
+
+    public User getUserByToken(String token);
 }

@@ -43,4 +43,13 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.ok("Deleted user with id: " + id);
     }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        log.info("Getting info user");
+        User user = userService.getUserByToken(jwt);
+        log.info("Getted info user: {}", user.getName());
+        return ResponseEntity.ok(user);
+    }
 }

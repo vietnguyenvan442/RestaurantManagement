@@ -2,6 +2,7 @@ package com.example.RestaurantManagement.controller;
 
 import com.example.RestaurantManagement.dto.BearerToken;
 import com.example.RestaurantManagement.dto.LoginDto;
+import com.example.RestaurantManagement.entity.User;
 import com.example.RestaurantManagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,10 @@ public class AuthController {
         BearerToken token = userService.generateToken(user);
         log.info("Generated token");
         return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        return ResponseEntity.ok(userService.add(user));
     }
 }

@@ -97,9 +97,10 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
     @Override
     public User add(User user) {
         checkNull(user);
+        checkUsername(user.getUsername());
         checkAlreadyExists(user);
-
-        user.setRole(roleService.findById(user.getRole().getId()));
+        if (user.getRole() == null) user.setRole((roleService.findById(4)));
+        else user.setRole(roleService.findById(user.getRole().getId()));
 
         if (user.getRole().getId() == 2) {
             Warehouse_Staff warehouseStaff = new Warehouse_Staff();
@@ -141,10 +142,14 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         }
     }
 
+    public void checkUsername(String username){
+        User old = getUserByUsername(username);
+        if (old != null) throw new AlreadyExistsException("Username Already Exists!");
+    }
 
     public void checkAlreadyExists(User user) {
         User old = userRepository.findByCccd(user.getCccd());
-        if (old != null) throw new AlreadyExistsException("Cccd Already Exists!");
+        if (old != null) throw new AlreadyExistsException("CCCD Already Exists!");
         old = userRepository.findByEmail(user.getEmail());
         if (old != null) throw new AlreadyExistsException("Email Already Exists!");
         old = userRepository.findByPhoneNumber(user.getPhoneNumber());
@@ -169,7 +174,6 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         if (user.getCccd().isEmpty()) throw new ValidationException("Cccd not null");
         if (user.getEmail().isEmpty()) throw new ValidationException("Email not null");
         if (user.getPhoneNumber().isEmpty()) throw new ValidationException("PhoneNumber not null");
-        if (user.getRole() == null || user.getRole().getId() == 0) throw new ValidationException("Role not null");
         if (user.getDob() == null) throw new ValidationException("Date of birth not null");
     }
 
@@ -182,12 +186,12 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
 
     public boolean checkState(String username) {
         log.info("Checking state for username: {}", username);
-        return getUserByUsername(username).map(User::isState).orElse(false);
+        return getUserByUsername(username).isState();
     }
 
-    public Optional<User> getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         log.info("Fetching user by username: {}", username);
-        return Optional.ofNullable(userRepository.findByUsername(username));
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -202,5 +206,17 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         Sale_Staff sale_staff = saleStaffRepository.findById(id);
         if (sale_staff == null) throw new ResourceNotFoundException("Sale_Staff not found with id: " + id);
         return sale_staff;
+    }
+
+    @Override
+    public User getUserByToken(String token) {
+        log.info("Fetching user by token");
+        String username = jwtUtil.getUsernameFromToken(token);
+        User user = getUserByUsername(username);
+        if (user == null) {
+            log.error("User not found with token: {}", token);
+            throw new ResourceNotFoundException("User not found with token: " + token);
+        }
+        return user;
     }
 }

@@ -46,6 +46,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Vô hiệu hóa CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/users/info").permitAll()
                         .requestMatchers("/bills/**").hasRole("SALE")
                         .requestMatchers("/bills/book-table").hasAnyRole("SALE", "CUSTOMER")
                         .requestMatchers("/bills/book-dish").hasAnyRole("SALE", "CUSTOMER")
