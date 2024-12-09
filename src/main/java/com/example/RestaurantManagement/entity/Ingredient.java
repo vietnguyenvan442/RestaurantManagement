@@ -21,10 +21,11 @@ public class Ingredient implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    private String image;
     private String name;
     private String des;
     private Double price;
+    private String unit;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "ingredient", cascade = CascadeType.ALL)

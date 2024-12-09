@@ -17,16 +17,6 @@ public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
 
-    @PostMapping("/inbound")
-    public ResponseEntity<Inbound_Receipt> inboundWarehouse(@RequestBody Inbound_Receipt inbound_receipt){
-        return ResponseEntity.ok(warehouseService.inboundWarehouse(inbound_receipt));
-    }
-
-    @PostMapping("/outbound")
-    public ResponseEntity<Outbound_Receipt> outboundWarehouse(@RequestBody Outbound_Receipt outbound_receipt){
-        return ResponseEntity.ok(warehouseService.outboundWarehouse(outbound_receipt));
-    }
-
     @GetMapping("")
     public ResponseEntity<Warehouse> getWarehouse(){
         return ResponseEntity.ok(warehouseService.getWarehouse());

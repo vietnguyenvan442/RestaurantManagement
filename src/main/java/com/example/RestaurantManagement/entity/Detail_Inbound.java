@@ -23,7 +23,6 @@ public class Detail_Inbound implements Serializable {
     private int id;
 
     private int amount;
-    private String unit;
     private double price;
     private double total;
 

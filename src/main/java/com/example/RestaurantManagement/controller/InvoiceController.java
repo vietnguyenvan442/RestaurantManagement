@@ -19,6 +19,16 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @GetMapping("")
+    public ResponseEntity<List<Invoice>> getAll(){
+        return ResponseEntity.ok(invoiceService.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Invoice> getById(@PathVariable int id){
+        return ResponseEntity.ok(invoiceService.getById(id));
+    }
+
+    @GetMapping("/not-expired")
     public ResponseEntity<List<Invoice>> getAllNotExpired() {
         return ResponseEntity.of(Optional.ofNullable(invoiceService.getAllNotExpired()));
     }

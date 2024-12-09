@@ -16,11 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-public class SecurityConfig {
+public class SecurityConfig{
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -52,10 +54,13 @@ public class SecurityConfig {
                         .requestMatchers("/bills/book-table").hasAnyRole("SALE", "CUSTOMER")
                         .requestMatchers("/bills/book-dish").hasAnyRole("SALE", "CUSTOMER")
                         .requestMatchers("/bills/customer/{id_cus}").hasRole("CUSTOMER")
+                        .requestMatchers("/upload/**").hasAnyRole("WAREHOUSE", "MANAGER")
                         .requestMatchers("/ingredients/**").hasRole("WAREHOUSE")
                         .requestMatchers("/suppliers/**").hasRole("WAREHOUSE")
                         .requestMatchers("/invoices/**").hasRole("WAREHOUSE")
                         .requestMatchers("/warehouses/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/inbound-receipts/**").hasRole("WAREHOUSE")
+                        .requestMatchers("/outbound-receipts/**").hasRole("WAREHOUSE")
                         .requestMatchers("/dishs/**").hasRole("MANAGER")
                         .requestMatchers("/combos/**").hasRole("MANAGER")
                         .requestMatchers("/menus/**").hasRole("MANAGER")

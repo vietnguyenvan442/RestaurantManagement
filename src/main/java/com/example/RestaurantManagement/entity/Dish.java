@@ -21,7 +21,7 @@ public class Dish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    private String image;
     private String name;
     private String des;
     private double price;

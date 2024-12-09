@@ -22,7 +22,7 @@ public class Combo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    private String image;
     private String name;
     private double price;
     private String des;

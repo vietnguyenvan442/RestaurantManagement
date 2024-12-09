@@ -24,8 +24,6 @@ public class Detail_Warehouse implements Serializable {
     private int id;
 
     private double amount;
-    private String unit;
-    private double price;
     private double total;
 
     @JoinColumn(name = "ingredient_id")
@@ -37,10 +35,8 @@ public class Detail_Warehouse implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Warehouse warehouse;
 
-    public Detail_Warehouse(double amount, String unit, double price, double total, Ingredient ingredient) {
+    public Detail_Warehouse(double amount, double total, Ingredient ingredient) {
         this.amount = amount;
-        this.unit = unit;
-        this.price = price;
         this.total = total;
         this.ingredient = ingredient;
     }

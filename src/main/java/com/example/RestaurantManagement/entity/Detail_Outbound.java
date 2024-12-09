@@ -23,7 +23,6 @@ public class Detail_Outbound implements Serializable {
     private int id;
 
     private int amount;
-    private String unit;
 
     @JoinColumn(name = "ingredient_id")
     @ManyToOne(fetch = FetchType.EAGER)

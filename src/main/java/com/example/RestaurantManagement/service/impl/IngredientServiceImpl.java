@@ -48,6 +48,8 @@ public class IngredientServiceImpl implements IngredientService {
         old.setName(ingredient.getName());
         old.setDes(ingredient.getDes());
         old.setPrice(ingredient.getPrice());
+        old.setImage(ingredient.getImage());
+        old.setUnit(ingredient.getUnit());
 
         return ingredientRepository.save(old);
     }
@@ -55,6 +57,8 @@ public class IngredientServiceImpl implements IngredientService {
     public boolean checkNull(Ingredient ingredient) {
         if (ingredient.getName().isEmpty()) return true;
         if (ingredient.getPrice() == null) return true;
+        if (ingredient.getImage() == null) return true;
+        if (ingredient.getUnit() == null) return true;
         return false;
     }
 

@@ -48,6 +48,7 @@ public class DishServiceImpl implements DishService {
         Dish new_dish = dishRepository.findById(id);
         new_dish.setName(dish.getName());
         new_dish.setDes(dish.getDes());
+        new_dish.setImage(dish.getImage());
 
         for (Detail_Dish d : dish.getDetail_dishes()) {
             d.setIngredient(ingredientService.getById(d.getIngredient().getId()));
