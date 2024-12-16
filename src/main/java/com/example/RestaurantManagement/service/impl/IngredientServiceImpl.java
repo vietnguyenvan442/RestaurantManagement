@@ -33,8 +33,15 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Ingredient add(Ingredient ingredient) {
-        if (checkNull(ingredient)) throw new ValidationException("Name and Price not null!");
-        if (checkAlreadyExists(ingredient)) throw new AlreadyExistsException("Ingredient Already Exists!");
+        if (checkNull(ingredient)) {
+            log.info("Error Validate!");
+            throw new ValidationException("Error Validate!");
+        }
+        if (checkAlreadyExists(ingredient)) {
+            log.info("Ingredient Already Exists!");
+            throw new AlreadyExistsException("Ingredient Already Exists!");
+        }
+        log.info("Successfull");
         return ingredientRepository.save(ingredient);
     }
 
@@ -42,7 +49,7 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredient update(int id, Ingredient ingredient) {
         Ingredient old = ingredientRepository.findById(id);
 
-        if (checkNull(ingredient)) throw new ValidationException("Name and Price not null!");
+        if (checkNull(ingredient)) throw new ValidationException("Error Validate!");
         if (checkDuplicateName(id, ingredient)) throw new AlreadyExistsException("Duplicate Names");
 
         old.setName(ingredient.getName());
@@ -56,7 +63,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     public boolean checkNull(Ingredient ingredient) {
         if (ingredient.getName().isEmpty()) return true;
-        if (ingredient.getPrice() == null) return true;
+        if (ingredient.getPrice() == 0) return true;
         if (ingredient.getImage() == null) return true;
         if (ingredient.getUnit() == null) return true;
         return false;

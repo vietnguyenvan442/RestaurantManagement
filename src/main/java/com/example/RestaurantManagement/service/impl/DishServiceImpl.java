@@ -3,6 +3,7 @@ package com.example.RestaurantManagement.service.impl;
 import com.example.RestaurantManagement.entity.Detail_Dish;
 import com.example.RestaurantManagement.entity.Dish;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
+import com.example.RestaurantManagement.exception.ValidationException;
 import com.example.RestaurantManagement.repository.DishRepository;
 import com.example.RestaurantManagement.service.DishService;
 import com.example.RestaurantManagement.service.IngredientService;
@@ -36,6 +37,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public Dish add(Dish dish) {
+        if (dish.getDetail_dishes().isEmpty()) throw new ValidationException("Detail dish not null");
         for (Detail_Dish d : dish.getDetail_dishes()) {
             d.setIngredient(ingredientService.getById(d.getIngredient().getId()));
             d.setDish(dish);
@@ -49,6 +51,7 @@ public class DishServiceImpl implements DishService {
         new_dish.setName(dish.getName());
         new_dish.setDes(dish.getDes());
         new_dish.setImage(dish.getImage());
+        new_dish.setPrice(dish.getPrice());
 
         for (Detail_Dish d : dish.getDetail_dishes()) {
             d.setIngredient(ingredientService.getById(d.getIngredient().getId()));

@@ -11,12 +11,12 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "detail_dish")
+@Table(name = "detail_combo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Detail_Dish implements Serializable {
+public class Detail_Combo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +24,12 @@ public class Detail_Dish implements Serializable {
 
     private int amount;
 
-    @JoinColumn(name = "ingredient_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Ingredient ingredient;
-
-    @JsonIgnore
     @JoinColumn(name = "dish_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Dish dish;
+
+    @JsonIgnore
+    @JoinColumn(name = "combo_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Combo combo;
 }

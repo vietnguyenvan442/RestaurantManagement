@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/dishs")
+@RequestMapping("/dishes")
 @CrossOrigin
 @Slf4j
 public class DishController {

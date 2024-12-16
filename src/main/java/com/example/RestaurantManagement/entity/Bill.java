@@ -32,9 +32,8 @@ public class Bill implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime end;
 
-    private double price_table;
-    private double price;
     private double total;
+    private String des;
     private boolean state;
 
     @JoinColumn(name = "table_id")
@@ -42,7 +41,7 @@ public class Bill implements Serializable {
     private com.example.RestaurantManagement.entity.Table table;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bill", cascade = CascadeType.ALL)
-    private List<Detail_Bill> detailBills;
+    private List<Detail_Bill> detail_bills;
 
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)

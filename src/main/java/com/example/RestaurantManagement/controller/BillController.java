@@ -18,8 +18,19 @@ public class BillController {
     @Autowired
     private BillService billService;
 
+    @PostMapping("")
+    public ResponseEntity<Bill> add(@RequestBody Bill bill){
+        return ResponseEntity.ok(billService.add(bill));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Bill> update(@PathVariable int id, @RequestBody Bill bill){
+        return ResponseEntity.ok(billService.update(id, bill));
+    }
+
     @PostMapping("/book-table")
     public ResponseEntity<Bill> bookTable(@RequestBody Bill bill){
+        log.info("Booking for table: " + bill.getTable().getName());
         return ResponseEntity.ok(billService.bookTable(bill));
     }
 
@@ -33,8 +44,9 @@ public class BillController {
         return ResponseEntity.ok(billService.getBillByTableAndTime(billDto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/pay/{id}")
     public ResponseEntity<Bill> pay(@PathVariable int id, @RequestBody Bill bill){
+        log.info("Paying for customer: " + bill.getCustomer().getName());
         return ResponseEntity.ok(billService.pay(id, bill));
     }
 

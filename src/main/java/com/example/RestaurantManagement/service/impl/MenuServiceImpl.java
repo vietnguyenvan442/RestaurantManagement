@@ -40,11 +40,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Menu getByActive() {
+        return menuRepository.findByStateTrue();
+    }
+
+    @Override
     public Menu add(Menu menu) {
         checkNull(menu);
         checkAlreadyExists(menu);
 
-        for (Detail_Menu dm : menu.getDetail_menuList()) {
+        for (Detail_Menu dm : menu.getDetail_menus()) {
             if (dm.getDish() != null) {
                 dm.setDish(dishService.getById(dm.getDish().getId()));
                 dm.setMenu(menu);
@@ -66,7 +71,7 @@ public class MenuServiceImpl implements MenuService {
         Menu old = menuRepository.findById(id);
         if (!old.getName().equals(menu.getName())) checkAlreadyExists(menu);
 
-        for (Detail_Menu dm : menu.getDetail_menuList()) {
+        for (Detail_Menu dm : menu.getDetail_menus()) {
             if (dm.getDish() != null) {
                 dm.setDish(dishService.getById(dm.getDish().getId()));
                 dm.setMenu(menu);
@@ -77,7 +82,7 @@ public class MenuServiceImpl implements MenuService {
             }
         }
 
-        old.setDetail_menuList(menu.getDetail_menuList());
+        old.setDetail_menus(menu.getDetail_menus());
         old.setName(menu.getName());
         old.setDate(Date.valueOf(LocalDate.now()));
         old.setDes(menu.getDes());
@@ -100,7 +105,7 @@ public class MenuServiceImpl implements MenuService {
 
     public void checkNull(Menu menu) {
         if (menu.getName().isEmpty()) throw new ValidationException("Name's menu not null");
-        if (menu.getDetail_menuList().isEmpty()) throw new ValidationException("List dish or combo menu not null");
+        if (menu.getDetail_menus().isEmpty()) throw new ValidationException("List dish or combo menu not null");
     }
 
     public void checkAlreadyExists(Menu menu) {

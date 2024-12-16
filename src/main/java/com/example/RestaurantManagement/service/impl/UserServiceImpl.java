@@ -108,6 +108,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
             warehouseStaff.setPassword(passwordEncoder.encode(user.getPassword()));
             warehouseStaff.setName(user.getName());
             warehouseStaff.setCccd(user.getCccd());
+            warehouseStaff.setName(user.getName());
             warehouseStaff.setEmail(user.getEmail());
             warehouseStaff.setPhoneNumber(user.getPhoneNumber());
             warehouseStaff.setDob(user.getDob());
@@ -121,6 +122,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
             saleStaff.setPassword(passwordEncoder.encode(user.getPassword()));
             saleStaff.setCccd(user.getCccd());
             saleStaff.setEmail(user.getEmail());
+            saleStaff.setName(user.getName());
             saleStaff.setPhoneNumber(user.getPhoneNumber());
             saleStaff.setDob(user.getDob());
             saleStaff.setAddress(user.getAddress());
@@ -133,6 +135,7 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
             customer.setPassword(passwordEncoder.encode(user.getPassword()));
             customer.setCccd(user.getCccd());
             customer.setEmail(user.getEmail());
+            customer.setName(user.getName());
             customer.setPhoneNumber(user.getPhoneNumber());
             customer.setDob(user.getDob());
             customer.setAddress(user.getAddress());
@@ -163,6 +166,11 @@ public class UserServiceImpl implements com.example.RestaurantManagement.service
         old.setName(user.getName());
         old.setDob(user.getDob());
         old.setAddress(user.getAddress());
+        old.setRole(roleService.findById(user.getRole().getId()));
+        old.setState(user.isState());
+        old.setPassword(passwordEncoder.encode(user.getPassword()));
+        old.setEmail(user.getEmail());
+        old.setPhoneNumber(user.getPhoneNumber());
         return userRepository.save(old);
     }
 

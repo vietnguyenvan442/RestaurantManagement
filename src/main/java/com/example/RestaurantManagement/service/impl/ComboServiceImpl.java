@@ -1,6 +1,8 @@
 package com.example.RestaurantManagement.service.impl;
 
 import com.example.RestaurantManagement.entity.Combo;
+import com.example.RestaurantManagement.entity.Detail_Combo;
+import com.example.RestaurantManagement.entity.Detail_Dish;
 import com.example.RestaurantManagement.entity.Dish;
 import com.example.RestaurantManagement.exception.AlreadyExistsException;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
@@ -40,14 +42,11 @@ public class ComboServiceImpl implements ComboSerivce {
         checkNull(combo);
         checkAlreadyExists(combo);
 
-        List<Dish> managedDishes = new ArrayList<>();
-        for (Dish d : combo.getDishes()) {
-            Dish managedDish = dishService.getById(d.getId());
-            managedDish.setCombo(combo);
-            managedDishes.add(managedDish);
+        if (combo.getDetail_combos().isEmpty()) throw new ValidationException("Detail combo not null");
+        for (Detail_Combo d : combo.getDetail_combos()) {
+            d.setDish(dishService.getById(d.getDish().getId()));
+            d.setCombo(combo);
         }
-        combo.setDishes(managedDishes);
-
         return comboRepository.save(combo);
     }
 
@@ -60,19 +59,18 @@ public class ComboServiceImpl implements ComboSerivce {
         old.setName(combo.getName());
         old.setDes(combo.getDes());
         old.setImage(combo.getImage());
-        List<Dish> managedDishes = new ArrayList<>();
-        for (Dish d : combo.getDishes()) {
-            Dish managedDish = dishService.getById(d.getId());
-            managedDish.setCombo(combo);
-            managedDishes.add(managedDish);
+        old.setPrice(combo.getPrice());
+        for (Detail_Combo d : combo.getDetail_combos()) {
+            d.setDish(dishService.getById(d.getDish().getId()));
+            d.setCombo(old);
         }
-        old.setDishes(managedDishes);
+        old.setDetail_combos(combo.getDetail_combos());
 
         return comboRepository.save(old);
     }
 
     public void checkNull(Combo combo) {
-        if (combo.getDishes().isEmpty()) throw new ValidationException("List Dish not null");
+        if (combo.getDetail_combos().isEmpty()) throw new ValidationException("List detail combo not null");
         if (combo.getName().isEmpty()) throw new ValidationException("Name combo not null");
     }
 

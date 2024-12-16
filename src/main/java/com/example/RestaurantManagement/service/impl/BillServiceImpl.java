@@ -2,7 +2,6 @@ package com.example.RestaurantManagement.service.impl;
 
 import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.dto.MonthlyRevenueStatistic;
-import com.example.RestaurantManagement.dto.TopDishStatisticInput;
 import com.example.RestaurantManagement.dto.TopDishStatisticOutput;
 import com.example.RestaurantManagement.entity.Bill;
 import com.example.RestaurantManagement.entity.Detail_Bill;
@@ -12,9 +11,12 @@ import com.example.RestaurantManagement.repository.BillRepository;
 import com.example.RestaurantManagement.repository.DetailBillRepository;
 import com.example.RestaurantManagement.repository.VoucherRepository;
 import com.example.RestaurantManagement.service.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +49,65 @@ public class BillServiceImpl implements BillService {
     private UserService userService;
 
     @Override
-    public Bill bookTable(Bill bill) {
-        bill.setCustomer(customerService.getById(bill.getCustomer().getId()));
+    public Bill add(Bill bill) {
+        if (bill.getCustomer() != null) bill.setCustomer(customerService.getById(bill.getCustomer().getId()));
         bill.setTable(tableService.getById(bill.getTable().getId()));
 
         if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
-        if (bill.getPrice_table() == 0) throw new ValidationException("Price table npt null");
+
+        for (Detail_Bill db: bill.getDetail_bills()){
+            if (db.getDish() != null) {
+                db.setDish(dishService.getById(db.getDish().getId()));
+                db.setPrice(db.getDish().getPrice());
+            }
+            if (db.getCombo() != null) {
+                db.setCombo(comboSerivce.getById(db.getCombo().getId()));
+                db.setPrice(db.getCombo().getPrice());
+            }
+            db.setTotal(db.getAmount() * db.getPrice());
+            db.setBill(bill);
+        }
+
+        return billRepository.save(bill);
+    }
+
+    @Override
+    public Bill update(int id, Bill bill) {
+        Bill old = billRepository.findById(id);
+
+        old.setTable(tableService.getById(bill.getTable().getId()));
+
+        if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
+
+        for (Detail_Bill db: bill.getDetail_bills()){
+            if (db.getDish() != null) {
+                db.setDish(dishService.getById(db.getDish().getId()));
+                db.setPrice(db.getDish().getPrice());
+            }
+            if (db.getCombo() != null) {
+                db.setCombo(comboSerivce.getById(db.getCombo().getId()));
+                db.setPrice(db.getCombo().getPrice());
+            }
+            db.setBill(bill);
+        }
+
+        old.setDetail_bills(bill.getDetail_bills());
+        old.setStart(bill.getStart());
+        old.setEnd(bill.getEnd());
+        old.setTotal(bill.getTotal());
+        old.setDes(bill.getDes());
+        old.setState(bill.isState());
+
+        return billRepository.save(bill);
+    }
+
+    @Override
+    public Bill bookTable(Bill bill) {
+        if (bill.getCustomer() != null) bill.setCustomer(customerService.getById(bill.getCustomer().getId()));
+
+        bill.setTable(tableService.getById(bill.getTable().getId()));
+
+        if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
 
         return billRepository.save(bill);
     }
@@ -61,7 +116,7 @@ public class BillServiceImpl implements BillService {
     public Bill bookDish(Bill bill) {
         Bill old = billRepository.findById(bill.getId());
 
-        for (Detail_Bill db: bill.getDetailBills()){
+        for (Detail_Bill db: bill.getDetail_bills()){
             if (db.getDish() != null) {
                 db.setDish(dishService.getById(db.getDish().getId()));
                 db.setPrice(db.getDish().getPrice());
@@ -73,7 +128,7 @@ public class BillServiceImpl implements BillService {
             db.setTotal(db.getAmount() * db.getPrice());
             db.setBill(old);
         }
-        old.setDetailBills(bill.getDetailBills());
+        old.setDetail_bills(bill.getDetail_bills());
         return billRepository.save(old);
     }
 
@@ -82,11 +137,10 @@ public class BillServiceImpl implements BillService {
         Bill bill = billRepository.findByTableIdAndDate(billDto.getId_table(), billDto.getDate());
 
         double price = 0;
-        for (Detail_Bill db: bill.getDetailBills()){
+        for (Detail_Bill db: bill.getDetail_bills()){
             price += db.getTotal();
         }
-        bill.setPrice(price);
-        bill.setTotal(bill.getPrice() + bill.getPrice_table());
+        bill.setTotal(price + bill.getTable().getPrice());
         if (bill.getVoucher() != null){
             bill.setVoucher(voucherRepository.findById(bill.getVoucher().getId()));
             bill.setTotal(bill.getTotal() * (1 - bill.getVoucher().getValue()));
@@ -138,7 +192,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public List<TopDishStatisticOutput> getTopDishesByDateRange(TopDishStatisticInput topDishStatisticInput) {
-        return detailBillRepository.findTopDishesByDateRange(topDishStatisticInput.getStart_date(), topDishStatisticInput.getEnd_date());
+    public List<TopDishStatisticOutput> getTopDishesByDateRange(LocalDate startDate, LocalDate endDate) {
+        return detailBillRepository.findTopDishesByDateRange(startDate, endDate);
     }
 }

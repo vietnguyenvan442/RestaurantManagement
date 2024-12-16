@@ -1,5 +1,7 @@
 package com.example.RestaurantManagement.dto;
 
+import com.example.RestaurantManagement.entity.Dish;
+import com.example.RestaurantManagement.entity.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TopDishStatisticOutput {
-    private String dishName;
+    private Dish dish;
     private Long totalQuantity;
 }

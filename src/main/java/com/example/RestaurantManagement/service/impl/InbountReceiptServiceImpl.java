@@ -2,6 +2,7 @@ package com.example.RestaurantManagement.service.impl;
 
 import com.example.RestaurantManagement.entity.Detail_Inbound;
 import com.example.RestaurantManagement.entity.Inbound_Receipt;
+import com.example.RestaurantManagement.exception.ValidationException;
 import com.example.RestaurantManagement.repository.InboundReceiptRepository;
 import com.example.RestaurantManagement.service.InboundReceiptService;
 import com.example.RestaurantManagement.service.IngredientService;
@@ -35,6 +36,9 @@ public class InbountReceiptServiceImpl implements InboundReceiptService {
     public Inbound_Receipt add(Inbound_Receipt inbound_receipt) {
         inbound_receipt.setWarehouse_staff(userService.getWarehouseStaffById(inbound_receipt.getWarehouse_staff().getId()));
         inbound_receipt.setInvoice(invoiceService.getById(inbound_receipt.getInvoice().getId()));
+
+        if (inbound_receipt.getDetail_inbounds().isEmpty()) throw new ValidationException("List detail inbound not null");
+
         for (Detail_Inbound di: inbound_receipt.getDetail_inbounds()){
             di.setIngredient(ingredientService.getById(di.getIngredient().getId()));
             di.setInbound_receipt(inbound_receipt);

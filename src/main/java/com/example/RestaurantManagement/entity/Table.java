@@ -21,6 +21,7 @@ public class Table implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private double price;
     private String name;
     private String des;
     private String address;

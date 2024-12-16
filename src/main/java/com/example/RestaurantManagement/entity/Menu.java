@@ -29,5 +29,5 @@ public class Menu implements Serializable {
     private boolean state;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu", cascade = CascadeType.ALL)
-    private List<Detail_Menu> detail_menuList;
+    private List<Detail_Menu> detail_menus;
 }

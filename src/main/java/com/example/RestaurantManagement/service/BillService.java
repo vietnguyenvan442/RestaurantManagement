@@ -2,13 +2,18 @@ package com.example.RestaurantManagement.service;
 
 import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.dto.MonthlyRevenueStatistic;
-import com.example.RestaurantManagement.dto.TopDishStatisticInput;
 import com.example.RestaurantManagement.dto.TopDishStatisticOutput;
 import com.example.RestaurantManagement.entity.Bill;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BillService {
+
+    public Bill add(Bill bill);
+
+    public Bill update(int id, Bill bill);
+
     public Bill bookTable(Bill bill);
 
     public Bill bookDish(Bill bill);
@@ -25,5 +30,5 @@ public interface BillService {
 
     public List<MonthlyRevenueStatistic> getMonthlyRevenueStatistic(int year);
 
-    public List<TopDishStatisticOutput> getTopDishesByDateRange(TopDishStatisticInput topDishStatisticInput);
+    public List<TopDishStatisticOutput> getTopDishesByDateRange(LocalDate startDate, LocalDate endDate);
 }

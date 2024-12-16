@@ -28,7 +28,7 @@ public class Combo implements Serializable {
     private String des;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)
-    private List<Dish> dishes;
+    private List<Detail_Combo> detail_combos;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "combo", cascade = CascadeType.ALL)

@@ -9,6 +9,8 @@ public interface MenuService {
 
     public Menu getById(int id);
 
+    public Menu getByActive();
+
     public Menu add(Menu menu);
 
     public Menu update(int id, Menu menu);

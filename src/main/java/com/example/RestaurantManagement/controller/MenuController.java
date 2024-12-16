@@ -5,6 +5,7 @@ import com.example.RestaurantManagement.service.MenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,11 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getById(id));
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<Menu> getByActive() {
+        return ResponseEntity.ok(menuService.getByActive());
+    }
+
     @PostMapping("")
     public ResponseEntity<Menu> add(@RequestBody Menu menu) {
         log.info("Adding combo: {}", menu.getName());
@@ -39,7 +45,7 @@ public class MenuController {
         return ResponseEntity.ok(menuService.update(id, menu));
     }
 
-    @PutMapping("/active/{id}")
+    @PutMapping("/{id}/active")
     public ResponseEntity<String> active(@PathVariable int id) {
         menuService.active(id);
         return ResponseEntity.ok("Success");

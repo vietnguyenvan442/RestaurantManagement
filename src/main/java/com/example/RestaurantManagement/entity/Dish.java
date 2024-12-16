@@ -30,9 +30,8 @@ public class Dish implements Serializable {
     private List<Detail_Dish> detail_dishes;
 
     @JsonIgnore
-    @JoinColumn(name = "combo_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Combo combo;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "dish", cascade = CascadeType.ALL)
+    private List<Detail_Combo> detail_combos;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dish", cascade = CascadeType.ALL)

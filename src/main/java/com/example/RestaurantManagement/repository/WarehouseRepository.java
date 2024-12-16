@@ -13,12 +13,13 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
     Warehouse findById(int id);
 
     @Query("SELECT new com.example.RestaurantManagement.entity.Detail_Warehouse(" +
-            "(COALESCE(SUM(din.amount), 0) - COALESCE(SUM(dout.amount), 0)), " +
-            "(COALESCE(SUM(din.amount), 0) - COALESCE(SUM(dout.amount), 0)) * i.price, " +
+            "COALESCE(SUM(din.amount), 0) - " +
+            "COALESCE((SELECT SUM(d.amount) FROM Detail_Outbound d WHERE d.ingredient.id = i.id), 0), " +
+            "(COALESCE(SUM(din.amount), 0) - " +
+            "COALESCE((SELECT SUM(d.amount) FROM Detail_Outbound d WHERE d.ingredient.id = i.id), 0)) * i.price, " +
             "i) " +
             "FROM Detail_Inbound din " +
-            "LEFT JOIN din.ingredient i " +
-            "LEFT JOIN Detail_Outbound dout ON dout.ingredient.id = i.id " +
+            "JOIN din.ingredient i " +
             "GROUP BY i.id, i.price, i.name")
     List<Detail_Warehouse> calculateCurrentInventory();
 }

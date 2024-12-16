@@ -7,6 +7,9 @@ import com.example.RestaurantManagement.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class TableServiceImpl implements TableService {
     @Autowired
@@ -18,4 +21,10 @@ public class TableServiceImpl implements TableService {
         if (table == null) throw new ResourceNotFoundException("Table not found");
         return table;
     }
+
+    @Override
+    public List<Table> getEmptyTables(LocalDateTime startTime, LocalDateTime endTime) {
+        return tableRepository.findEmptyTablesWithinTime(startTime, endTime);
+    }
+
 }
