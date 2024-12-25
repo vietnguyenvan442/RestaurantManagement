@@ -20,7 +20,6 @@ public interface TableRepository extends JpaRepository<Table, Integer> {
             SELECT b 
             FROM Bill b 
             WHERE b.table = t 
-              AND b.state = true 
               AND ((b.start BETWEEN :startTime AND :endTime) OR (b.end BETWEEN :startTime AND :endTime) OR (:startTime BETWEEN b.start AND b.end))
         )
     """)

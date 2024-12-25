@@ -80,6 +80,7 @@
 			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
 
+
 	</dependencies>
 
 	<build>

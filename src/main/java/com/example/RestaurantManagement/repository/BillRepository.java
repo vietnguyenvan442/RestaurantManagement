@@ -14,6 +14,8 @@ import java.util.List;
 public interface BillRepository extends JpaRepository<Bill, Integer> {
     Bill findById(int id);
 
+    List<Bill> findByStateFalse();
+
     @Query("SELECT b FROM Bill b WHERE b.table.id = :id AND b.start <= :date AND b.end >= :date")
     Bill findByTableIdAndDate(@Param("id") int id, @Param("date") LocalDateTime date);
 
@@ -27,4 +29,11 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "GROUP BY MONTH(b.start) " +
             "ORDER BY MONTH(b.start)")
     List<MonthlyRevenueStatistic> findMonthlyRevenueStatistics(@Param("year") int year);
+
+    @Query("SELECT MONTH(ir.date) AS month, SUM(di.total) AS totalImport " +
+            "FROM Inbound_Receipt ir JOIN ir.detail_inbounds di " +
+            "WHERE YEAR(ir.date) = :year " +
+            "GROUP BY MONTH(ir.date) " +
+            "ORDER BY MONTH(ir.date)")
+    List<Object[]> findMonthlyImportStatistics(@Param("year") int year);
 }

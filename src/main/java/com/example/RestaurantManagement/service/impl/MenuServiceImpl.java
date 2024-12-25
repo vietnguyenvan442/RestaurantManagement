@@ -9,6 +9,7 @@ import com.example.RestaurantManagement.repository.MenuRepository;
 import com.example.RestaurantManagement.service.ComboSerivce;
 import com.example.RestaurantManagement.service.DishService;
 import com.example.RestaurantManagement.service.MenuService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MenuServiceImpl implements MenuService {
     @Autowired
@@ -110,6 +112,9 @@ public class MenuServiceImpl implements MenuService {
 
     public void checkAlreadyExists(Menu menu) {
         Menu old = menuRepository.findByName(menu.getName());
-        if (old != null) throw new AlreadyExistsException("Name's menu already exists");
+        if (old != null) {
+            log.info("Name's menu already exists");
+            throw new AlreadyExistsException("Name's menu already exists");
+        }
     }
 }

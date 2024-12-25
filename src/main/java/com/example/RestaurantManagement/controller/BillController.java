@@ -2,6 +2,8 @@ package com.example.RestaurantManagement.controller;
 
 import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.entity.Bill;
+import com.example.RestaurantManagement.entity.Sale_Staff;
+import com.example.RestaurantManagement.entity.User;
 import com.example.RestaurantManagement.service.BillService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,11 @@ public class BillController {
         return ResponseEntity.ok(billService.add(bill));
     }
 
+    @GetMapping("/unpaid")
+    public ResponseEntity<List<Bill>> getUnpaids(){
+        return ResponseEntity.ok(billService.getUnpaids());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Bill> update(@PathVariable int id, @RequestBody Bill bill){
         return ResponseEntity.ok(billService.update(id, bill));
@@ -36,6 +43,7 @@ public class BillController {
 
     @PostMapping("/book-dish")
     public ResponseEntity<Bill> bookDish(@RequestBody Bill bill){
+        log.info("Booking dishes");
         return ResponseEntity.ok(billService.bookDish(bill));
     }
 
@@ -45,9 +53,9 @@ public class BillController {
     }
 
     @PutMapping("/pay/{id}")
-    public ResponseEntity<Bill> pay(@PathVariable int id, @RequestBody Bill bill){
-        log.info("Paying for customer: " + bill.getCustomer().getName());
-        return ResponseEntity.ok(billService.pay(id, bill));
+    public ResponseEntity<Bill> pay(@PathVariable int id, @RequestBody User user){
+        log.info("Paying for customer: ");
+        return ResponseEntity.ok(billService.pay(id, user));
     }
 
     @GetMapping("")

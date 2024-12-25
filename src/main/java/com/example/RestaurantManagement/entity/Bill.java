@@ -55,4 +55,12 @@ public class Bill implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Voucher voucher;
 
+    public double getTotal(){
+        double sum = 0;
+        for (Detail_Bill db: detail_bills){
+            sum += db.getTotal();
+        }
+        return sum + table.getPrice();
+    }
+
 }

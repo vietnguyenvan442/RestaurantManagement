@@ -5,23 +5,26 @@ import com.example.RestaurantManagement.dto.MonthlyRevenueStatistic;
 import com.example.RestaurantManagement.dto.TopDishStatisticOutput;
 import com.example.RestaurantManagement.entity.Bill;
 import com.example.RestaurantManagement.entity.Detail_Bill;
+import com.example.RestaurantManagement.entity.Sale_Staff;
+import com.example.RestaurantManagement.entity.User;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
 import com.example.RestaurantManagement.exception.ValidationException;
 import com.example.RestaurantManagement.repository.BillRepository;
 import com.example.RestaurantManagement.repository.DetailBillRepository;
 import com.example.RestaurantManagement.repository.VoucherRepository;
 import com.example.RestaurantManagement.service.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class BillServiceImpl implements BillService {
     @Autowired
@@ -53,9 +56,10 @@ public class BillServiceImpl implements BillService {
         if (bill.getCustomer() != null) bill.setCustomer(customerService.getById(bill.getCustomer().getId()));
         bill.setTable(tableService.getById(bill.getTable().getId()));
 
-        if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
+        if (bill.getStart() == null || bill.getEnd() == null)
+            throw new ValidationException("Start & End time not null");
 
-        for (Detail_Bill db: bill.getDetail_bills()){
+        for (Detail_Bill db : bill.getDetail_bills()) {
             if (db.getDish() != null) {
                 db.setDish(dishService.getById(db.getDish().getId()));
                 db.setPrice(db.getDish().getPrice());
@@ -77,9 +81,10 @@ public class BillServiceImpl implements BillService {
 
         old.setTable(tableService.getById(bill.getTable().getId()));
 
-        if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
+        if (bill.getStart() == null || bill.getEnd() == null)
+            throw new ValidationException("Start & End time not null");
 
-        for (Detail_Bill db: bill.getDetail_bills()){
+        for (Detail_Bill db : bill.getDetail_bills()) {
             if (db.getDish() != null) {
                 db.setDish(dishService.getById(db.getDish().getId()));
                 db.setPrice(db.getDish().getPrice());
@@ -107,8 +112,10 @@ public class BillServiceImpl implements BillService {
 
         bill.setTable(tableService.getById(bill.getTable().getId()));
 
-        if (bill.getStart() == null || bill.getEnd() == null) throw new ValidationException("Start & End time not null");
+        if (bill.getStart() == null || bill.getEnd() == null)
+            throw new ValidationException("Start & End time not null");
 
+        log.info("Success");
         return billRepository.save(bill);
     }
 
@@ -116,7 +123,8 @@ public class BillServiceImpl implements BillService {
     public Bill bookDish(Bill bill) {
         Bill old = billRepository.findById(bill.getId());
 
-        for (Detail_Bill db: bill.getDetail_bills()){
+        double  price = 0;
+        for (Detail_Bill db : bill.getDetail_bills()) {
             if (db.getDish() != null) {
                 db.setDish(dishService.getById(db.getDish().getId()));
                 db.setPrice(db.getDish().getPrice());
@@ -127,7 +135,9 @@ public class BillServiceImpl implements BillService {
             }
             db.setTotal(db.getAmount() * db.getPrice());
             db.setBill(old);
+            price += db.getAmount() * db.getPrice();
         }
+        old.setTotal(price);
         old.setDetail_bills(bill.getDetail_bills());
         return billRepository.save(old);
     }
@@ -137,11 +147,11 @@ public class BillServiceImpl implements BillService {
         Bill bill = billRepository.findByTableIdAndDate(billDto.getId_table(), billDto.getDate());
 
         double price = 0;
-        for (Detail_Bill db: bill.getDetail_bills()){
+        for (Detail_Bill db : bill.getDetail_bills()) {
             price += db.getTotal();
         }
         bill.setTotal(price + bill.getTable().getPrice());
-        if (bill.getVoucher() != null){
+        if (bill.getVoucher() != null) {
             bill.setVoucher(voucherRepository.findById(bill.getVoucher().getId()));
             bill.setTotal(bill.getTotal() * (1 - bill.getVoucher().getValue()));
         }
@@ -150,9 +160,9 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Bill pay(int bill_id, Bill bill) {
+    public Bill pay(int bill_id, User user) {
         Bill old = billRepository.findById(bill_id);
-        old.setSale_staff(userService.getSaleStaffById(bill.getSale_staff().getId()));
+        old.setSale_staff(userService.getSaleStaffById(user.getId()));
         old.setState(true);
         return billRepository.save(old);
     }
@@ -160,6 +170,11 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<Bill> getAll() {
         return billRepository.findAll();
+    }
+
+    @Override
+    public List<Bill> getUnpaids() {
+        return billRepository.findByStateFalse();
     }
 
     @Override
@@ -176,19 +191,35 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<MonthlyRevenueStatistic> getMonthlyRevenueStatistic(int year) {
-        List<MonthlyRevenueStatistic> revenueStatistics = billRepository.findMonthlyRevenueStatistics(year);
-        Map<Integer, Double> revenueByMonth = new HashMap<>();
-        for (int month = 1; month <= 12; month++) {
-            revenueByMonth.put(month, 0.0);
-        }
-        for (MonthlyRevenueStatistic stat : revenueStatistics) {
-            revenueByMonth.put(stat.getMonth(), stat.getTotal());
-        }
-        List<MonthlyRevenueStatistic> result = revenueByMonth.entrySet().stream()
-                .map(entry -> new MonthlyRevenueStatistic(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        // Lấy dữ liệu doanh thu và tiền nhập nguyên liệu từ repository
+        List<MonthlyRevenueStatistic> revenueStats = billRepository.findMonthlyRevenueStatistics(year);
+        List<Object[]> importStats = billRepository.findMonthlyImportStatistics(year);
 
-        return result;
+        // Chuyển đổi importStats thành Map
+        Map<Integer, Double> importMap = importStats.stream()
+                .collect(Collectors.toMap(
+                        row -> (Integer) row[0], // Month
+                        row -> (Double) row[1]  // Total Import
+                ));
+
+        // Tạo danh sách thống kê cho tất cả 12 tháng
+        List<MonthlyRevenueStatistic> fullStats = new ArrayList<>();
+        for (int month = 1; month <= 12; month++) {
+            // Tìm doanh thu và tiền nhập nguyên liệu cho tháng hiện tại
+            int finalMonth = month;
+            double revenue = revenueStats.stream()
+                    .filter(stat -> stat.getMonth() == finalMonth)
+                    .map(MonthlyRevenueStatistic::getTotalRevenue)
+                    .findFirst()
+                    .orElse(0.0);
+
+            double totalImport = importMap.getOrDefault(month, 0.0);
+
+            // Thêm thống kê cho tháng hiện tại
+            fullStats.add(new MonthlyRevenueStatistic(month, revenue, totalImport));
+        }
+
+        return fullStats;
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.dto.MonthlyRevenueStatistic;
 import com.example.RestaurantManagement.dto.TopDishStatisticOutput;
 import com.example.RestaurantManagement.entity.Bill;
+import com.example.RestaurantManagement.entity.Sale_Staff;
+import com.example.RestaurantManagement.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +22,11 @@ public interface BillService {
 
     public Bill getBillByTableAndTime(BillDto billDto);
 
-    public Bill pay(int bill_id, Bill bill);
+    public Bill pay(int bill_id, User user);
 
     public List<Bill> getAll();
+
+    public List<Bill> getUnpaids();
 
     public Bill getById(int id);
 
