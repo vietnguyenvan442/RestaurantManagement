@@ -1,11 +1,9 @@
 package com.example.RestaurantManagement.service.impl;
 
-import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.dto.MonthlyRevenueStatistic;
 import com.example.RestaurantManagement.dto.TopDishStatisticOutput;
 import com.example.RestaurantManagement.entity.Bill;
 import com.example.RestaurantManagement.entity.Detail_Bill;
-import com.example.RestaurantManagement.entity.Sale_Staff;
 import com.example.RestaurantManagement.entity.User;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
 import com.example.RestaurantManagement.exception.ValidationException;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -121,42 +118,64 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill bookDish(Bill bill) {
+        // Lấy hóa đơn cũ từ cơ sở dữ liệu
         Bill old = billRepository.findById(bill.getId());
-
-        double  price = 0;
-        for (Detail_Bill db : bill.getDetail_bills()) {
-            if (db.getDish() != null) {
-                db.setDish(dishService.getById(db.getDish().getId()));
-                db.setPrice(db.getDish().getPrice());
-            }
-            if (db.getCombo() != null) {
-                db.setCombo(comboSerivce.getById(db.getCombo().getId()));
-                db.setPrice(db.getCombo().getPrice());
-            }
-            db.setTotal(db.getAmount() * db.getPrice());
-            db.setBill(old);
-            price += db.getAmount() * db.getPrice();
+        if (old == null) {
+            throw new IllegalArgumentException("Bill not found with id: " + bill.getId());
         }
-        old.setTotal(price);
-        old.setDetail_bills(bill.getDetail_bills());
+
+        double totalPrice = 0;
+
+        // Xóa các chi tiết cũ và thêm mới
+        old.getDetail_bills().clear();
+
+        for (Detail_Bill db : bill.getDetail_bills()) {
+            if (db.getId() != 0) {
+                // Tìm detail_bill đã tồn tại trong cơ sở dữ liệu
+                Detail_Bill existingDetail = detailBillRepository.findById(db.getId());
+                if (existingDetail == null) {
+                    throw new IllegalArgumentException("Detail_Bill not found with id: " + db.getId());
+                }
+                existingDetail.setAmount(db.getAmount());
+                db = existingDetail;
+            } else {
+                // Xử lý nếu là chi tiết mới
+                if (db.getDish() != null) {
+                    db.setDish(dishService.getById(db.getDish().getId()));
+                    db.setPrice(db.getDish().getPrice());
+                }
+                if (db.getCombo() != null) {
+                    db.setCombo(comboSerivce.getById(db.getCombo().getId()));
+                    db.setPrice(db.getCombo().getPrice());
+                }
+            }
+
+            // Tính tổng tiền và gắn chi tiết vào hóa đơn
+            db.setTotal(db.getAmount() * db.getPrice());
+            db.setBill(old); // Liên kết chi tiết với hóa đơn cũ
+            totalPrice += db.getTotal();
+
+            // Thêm chi tiết vào danh sách của hóa đơn
+            old.getDetail_bills().add(db);
+        }
+
+        // Cập nhật tổng tiền hóa đơn
+        old.setTotal(totalPrice);
+
+        // Lưu hóa đơn và các chi tiết
         return billRepository.save(old);
     }
 
     @Override
-    public Bill getBillByTableAndTime(BillDto billDto) {
-        Bill bill = billRepository.findByTableIdAndDate(billDto.getId_table(), billDto.getDate());
+    public List<Bill> getBillByTableAndTime(int id_table, LocalDate date) {
+        return billRepository.findBillsByTableAndDate(id_table, date);
+    }
 
-        double price = 0;
-        for (Detail_Bill db : bill.getDetail_bills()) {
-            price += db.getTotal();
-        }
-        bill.setTotal(price + bill.getTable().getPrice());
-        if (bill.getVoucher() != null) {
-            bill.setVoucher(voucherRepository.findById(bill.getVoucher().getId()));
-            bill.setTotal(bill.getTotal() * (1 - bill.getVoucher().getValue()));
-        }
-        bill.setState(false);
-        return billRepository.save(bill);
+    @Override
+    public Detail_Bill delivered(int id, Detail_Bill detail_bill) {
+        Detail_Bill db = detailBillRepository.findById(id);
+        db.setState(detail_bill.getAmount());
+        return detailBillRepository.save(db);
     }
 
     @Override
@@ -220,6 +239,11 @@ public class BillServiceImpl implements BillService {
         }
 
         return fullStats;
+    }
+
+    @Override
+    public List<Bill> getBillsByMonth(int month, int year) {
+        return billRepository.findBillsByMonth(month, year);
     }
 
     @Override

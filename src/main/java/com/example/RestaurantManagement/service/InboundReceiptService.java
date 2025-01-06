@@ -8,4 +8,6 @@ import java.util.List;
 public interface InboundReceiptService {
     public List<Inbound_Receipt> getAll();
     public Inbound_Receipt add(Inbound_Receipt inbound_receipt);
+
+    public List<Inbound_Receipt> getStatByMonth(int month, int year);
 }

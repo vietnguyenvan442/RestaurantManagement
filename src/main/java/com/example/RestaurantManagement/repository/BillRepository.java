@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,10 +17,10 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
     List<Bill> findByStateFalse();
 
-    @Query("SELECT b FROM Bill b WHERE b.table.id = :id AND b.start <= :date AND b.end >= :date")
-    Bill findByTableIdAndDate(@Param("id") int id, @Param("date") LocalDateTime date);
+    @Query("SELECT b FROM Bill b WHERE b.table.id = :id AND DATE(b.start) = :date")
+    List<Bill> findBillsByTableAndDate(@Param("id") int tableId, @Param("date") LocalDate date);
 
-    @Query("SELECT b FROM Bill b WHERE b.customer.id = :id_cus")
+    @Query("SELECT b FROM Bill b WHERE b.customer.id = :id_cus ORDER BY b.start DESC")
     List<Bill> findAllByCustomerId(@Param("id_cus") int id_cus);
 
     @Query("SELECT new com.example.RestaurantManagement.dto.MonthlyRevenueStatistic(" +
@@ -36,4 +37,8 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "GROUP BY MONTH(ir.date) " +
             "ORDER BY MONTH(ir.date)")
     List<Object[]> findMonthlyImportStatistics(@Param("year") int year);
+
+    @Query("SELECT b FROM Bill b WHERE FUNCTION('MONTH', b.start) = :month AND FUNCTION('YEAR', b.start) = :year AND b.state = true")
+    List<Bill> findBillsByMonth(@Param("month") int month, @Param("year") int year);
+
 }

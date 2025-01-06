@@ -45,4 +45,9 @@ public class InbountReceiptServiceImpl implements InboundReceiptService {
         }
         return inboundReceiptRepository.save(inbound_receipt);
     }
+
+    @Override
+    public List<Inbound_Receipt> getStatByMonth(int month, int year) {
+        return inboundReceiptRepository.findBillsByMonth(month, year);
+    }
 }

@@ -23,6 +23,11 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
+    public List<Table> getAll() {
+        return tableRepository.findAll();
+    }
+
+    @Override
     public List<Table> getEmptyTables(LocalDateTime startTime, LocalDateTime endTime) {
         return tableRepository.findEmptyTablesWithinTime(startTime, endTime);
     }

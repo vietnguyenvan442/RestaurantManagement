@@ -25,7 +25,7 @@ public class Detail_Bill implements Serializable {
     private int amount;
     private double price;
     private double total;
-    private boolean state;
+    private int state;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dish_id")

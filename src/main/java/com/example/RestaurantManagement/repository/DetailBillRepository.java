@@ -12,6 +12,8 @@ import java.util.List;
 
 @Repository
 public interface DetailBillRepository extends JpaRepository<Detail_Bill, Integer> {
+    Detail_Bill findById(int id);
+
     @Query("SELECT new com.example.RestaurantManagement.dto.TopDishStatisticOutput(d.dish, SUM(d.amount)) " +
             "FROM Detail_Bill d " +
             "JOIN d.bill b " +

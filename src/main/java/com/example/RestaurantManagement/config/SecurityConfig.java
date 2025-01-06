@@ -48,13 +48,14 @@ public class SecurityConfig{
                 .csrf(AbstractHttpConfigurer::disable) // Vô hiệu hóa CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/users/info").permitAll()
-                        .requestMatchers("/tables", "/bills/book-table", "/bills/book-dish").hasAnyRole("SALE", "CUSTOMER")
-                        .requestMatchers("/bills/**").hasRole("SALE")
+                        .requestMatchers("/tables/available", "/bills/book-table", "/bills/book-dish").hasAnyRole("SALE", "CUSTOMER")
                         .requestMatchers("/bills/customer/{id_cus}").hasRole("CUSTOMER")
+                        .requestMatchers("/bills/search/{id_table}/{date}").hasAnyRole("CUSTOMER", "SALE")
+                        .requestMatchers("/bills/**").hasRole("SALE")
                         .requestMatchers("/upload/**", "/ingredients/**").hasAnyRole("WAREHOUSE", "MANAGER")
                         .requestMatchers("/suppliers/**", "/invoices/**", "/warehouses/**", "/inbound-receipts/**", "/outbound-receipts/**").hasRole("WAREHOUSE")
                         .requestMatchers("/dishes/**", "/combos/**").hasRole("MANAGER")
-                        .requestMatchers("/menus/active").hasAnyRole("SALE", "MANAGER", "CUSTOMER")
+                        .requestMatchers("/menus/active").permitAll()
                         .requestMatchers("/menus/**", "/users/**", "/statistic/**").hasRole("MANAGER")
                         .anyRequest().authenticated()
                 )

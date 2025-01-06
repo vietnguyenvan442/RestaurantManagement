@@ -34,4 +34,13 @@ public class Inbound_Receipt implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "inbound_receipt", cascade = CascadeType.ALL)
     private List<Detail_Inbound> detail_inbounds;
+
+    private double total;
+    public double getTotal(){
+        double sum = 0;
+        for (Detail_Inbound di: detail_inbounds){
+            sum += di.getTotal();
+        }
+        return sum;
+    }
 }

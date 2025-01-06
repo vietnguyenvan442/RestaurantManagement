@@ -8,6 +8,8 @@ import java.util.List;
 public interface TableService {
     Table getById(int id);
 
+    List<Table> getAll();
+
     List<Table> getEmptyTables(LocalDateTime startTime, LocalDateTime endTime);
 
 }

@@ -1,8 +1,7 @@
 package com.example.RestaurantManagement.controller;
 
-import com.example.RestaurantManagement.dto.BillDto;
 import com.example.RestaurantManagement.entity.Bill;
-import com.example.RestaurantManagement.entity.Sale_Staff;
+import com.example.RestaurantManagement.entity.Detail_Bill;
 import com.example.RestaurantManagement.entity.User;
 import com.example.RestaurantManagement.service.BillService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,9 +47,15 @@ public class BillController {
         return ResponseEntity.ok(billService.bookDish(bill));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<Bill> getBillByTableAndTime(@RequestBody BillDto billDto){
-        return ResponseEntity.ok(billService.getBillByTableAndTime(billDto));
+    @GetMapping("/search/{id_table}/{date}")
+    public ResponseEntity<List<Bill>> getBillByTableAndTime(@PathVariable int id_table, @PathVariable LocalDate date){
+        return ResponseEntity.ok(billService.getBillByTableAndTime(id_table, date));
+    }
+
+    @PutMapping("/delivered/{id}")
+    public ResponseEntity<Detail_Bill> delivered(@PathVariable int id, @RequestBody Detail_Bill detail_bill){
+        log.info("Updating for detail bill");
+        return ResponseEntity.ok(billService.delivered(id, detail_bill));
     }
 
     @PutMapping("/pay/{id}")
